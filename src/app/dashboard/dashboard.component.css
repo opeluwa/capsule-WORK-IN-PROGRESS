@@ -1,0 +1,9 @@
+.mainDiv{
+  margin-top: 25vh;
+}
+
+@media (max-width: 992px) {
+  .mainDiv {
+    margin-top: 2vh;
+  }
+}

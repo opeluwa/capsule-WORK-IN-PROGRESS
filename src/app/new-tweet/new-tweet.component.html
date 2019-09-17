@@ -1,0 +1,144 @@
+<div class="backdrop" (click)="onLeave()">
+</div>
+
+
+  <div class="modal-dialog" id="exampleModalLong" tabindex="-1" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Schedule a tweet</h5>
+        <button type="button" class="close" (click)="onLeave()" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="modal-body">
+        <div class="form-group">
+          <div class="row">
+            <div class="col-12 col-md-9 ">
+            <div class="form-group">
+              <label for="exampleFormControlInput1">Tweet body <span [ngStyle]="{color: tweetBody && tweetBody.length>240 ? 'red': '#0084b4 '}">{{tweetBody && tweetBody.length}}</span></label>
+              <textarea ngDefaultControl class="form-control" [ngClass]="{'is-invalid': !form.get('tweetBody').valid &&
+              form.get('tweetBody').touched}" formControlName="tweetBody" name="message" id="exampleFormControlInput1" (input)="tweetBody = $event.target.value" placeholder="Whats happening?"></textarea>
+            </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <span class="text-danger" *ngIf="!form.get('tweetBody').valid && form.get('tweetBody').touched">
+                Tweet length must be at least 1 character
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Schedule type</label>
+          <div class="row">
+            <div class="col">
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="customRadioInline1" value="1" formControlName="scheduleType" name="scheduleType" class="custom-control-input">
+              <label  style="cursor: pointer;" class="custom-control-label noselect" for="customRadioInline1">Set date</label>
+            </div>
+            <div class="custom-control custom-radio custom-control-inline">
+              <input type="radio" id="customRadioInline2" value="2" formControlName="scheduleType" name="scheduleType" class="custom-control-input">
+              <label  style="cursor: pointer;" class="custom-control-label noselect" for="customRadioInline2">Reminders</label>
+            </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="form.get('scheduleType').value == 1;else other_content">
+          <div class="form-group row">
+            <label for="example-datetime-local-input" class="col-12 col-form-label">Date and time</label>
+            <div class="col-9 col-md-9">
+              <input class="form-control" formControlName="setDate"  type="datetime-local" value="2011-08-19T13:45:00"
+                    [ngClass]="{'is-invalid': !form.get('setDate').valid && form.get('setDate').touched}" id="example-datetime-local-input">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <span class="text-danger" *ngIf="!form.get('setDate').valid && form.get('setDate').touched">Date entered mustn't have passed and be valid</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-template #other_content>
+            <div class="form-group row" formGroupName="reminders">
+              <label for="example-number-input" class="col-12 col-form-label">Remind me to interact every</label>
+              <div class="col-5 col-md-4">
+                <input class="form-control" formControlName="number" type="number"
+                      [ngClass]="{'is-invalid': !form.get('reminders.number').valid && form.get('reminders.number').touched}"
+                       value="42" placeholder="#" id="example-number-input">
+              </div>
+              <div class="col-6 col-md-4">
+                <select  style="cursor: pointer;" class="form-control" formControlName="unit" id="exampleSelect1">
+                  <option>Minutes</option>
+                  <option>Hours</option>
+                  <option>Days</option>
+               </select>
+            </div>
+              <div class="col-12">
+                <span class="text-danger" *ngIf="!form.get('reminders.number').valid && form.get('reminders.number').touched">
+                  Value to remind you must be above 0
+                </span>
+              </div>
+            </div>
+        </ng-template>
+
+        <label>Tweet type</label>
+        <div class="form-group" formGroupName="tweetType">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" formControlName="public" id="customSwitch1">
+            <label class="custom-control-label" for="customSwitch1">Public tweet</label>
+          </div>
+
+
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" formControlName="Dm" id="customSwitch2">
+              <label class="custom-control-label" for="customSwitch2">Direct Message</label>
+            </div>
+          <span class="text-danger" *ngIf="!form.get('tweetType.public').value && !form.get('tweetType.Dm').value &&
+                                           (form.get('tweetType.public').touched || form.get('tweetType.Dm').touched)">
+            A method to send the message should be selected
+          </span>
+        </div>
+
+          <div class="row" *ngIf="form.get('tweetType.Dm').value == true">
+            <div class="col-sm-12 col-md-6">
+              <div formArrayName="userNames">
+                <div class="row" *ngFor="let item of returnControlUsers(); let i = index" [formGroupName]="i">
+
+                    <div class="col-12">
+                      <div class="form-group">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">@</span>
+                          </div>
+                          <input class="form-control" formControlName="userNames" name="text" type="text" placeholder="Username" id="cost">
+                          <button class="btn btn-danger" style="margin-left: 10px;" (click)="removeUser(i)">x</button>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="form.get('tweetType.Dm').value == true">
+            <div class="col-12">
+              <button type="button" style="margin-left: 0px;" class="btn btn-primary ml-0" (click)="newUserName()">Add new @</button>
+            </div>
+          </div>
+      </div>
+      <div class="modal-footer" (mouseover)="footer= true" (mouseleave)="footer= false">
+        <span class="text-danger mr-auto" *ngIf="footer && (!form.valid || (!form.get('tweetType.public').value && !form.get('tweetType.Dm').value))" >
+         Not all fields are filled in correctly
+        </span>
+        <button type="submit" [disabled]="!form.valid || (!form.get('tweetType.public').value && !form.get('tweetType.Dm').value)" class="btn btn-primary">Schedule</button>
+        <button type="button" (click)="onLeave()"  class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>

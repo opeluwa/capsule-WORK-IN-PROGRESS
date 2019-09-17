@@ -1,0 +1,9 @@
+.nav-link.navText {
+  color: #FF7F7F;
+  cursor:pointer;
+}
+
+.nav-link.navText:hover {
+  color: white;
+  cursor:pointer;
+}
