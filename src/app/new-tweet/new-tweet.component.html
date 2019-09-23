@@ -18,7 +18,7 @@
             <div class="col-12 col-md-9 ">
             <div class="form-group">
               <label for="exampleFormControlInput1">Tweet body <span [ngStyle]="{color: tweetBody && tweetBody.length>240 ? 'red': '#0084b4 '}">{{tweetBody && tweetBody.length}}</span></label>
-              <textarea ngDefaultControl class="form-control" [ngClass]="{'is-invalid': !form.get('tweetBody').valid &&
+              <textarea ngDefaultControl class="form-control" rows="4" [ngClass]="{'is-invalid': !form.get('tweetBody').valid &&
               form.get('tweetBody').touched}" formControlName="tweetBody" name="message" id="exampleFormControlInput1" (input)="tweetBody = $event.target.value" placeholder="Whats happening?"></textarea>
             </div>
             </div>
@@ -98,28 +98,56 @@
               <input type="checkbox" class="custom-control-input" formControlName="Dm" id="customSwitch2">
               <label class="custom-control-label" for="customSwitch2">Direct Message</label>
             </div>
-          <span class="text-danger" *ngIf="!form.get('tweetType.public').value && !form.get('tweetType.Dm').value &&
-                                           (form.get('tweetType.public').touched || form.get('tweetType.Dm').touched)">
-            A method to send the message should be selected
-          </span>
+          <div class="row">
+            <div class="col-12">
+              <span class="text-danger" *ngIf="!form.get('tweetType.public').value && !form.get('tweetType.Dm').value &&
+                                               (form.get('tweetType.public').touched || form.get('tweetType.Dm').touched)">
+                A method to send the message should be selected
+              </span>
+            </div>
+          </div>
+
+
+          <div class="row">
+            <div class="col-12">
+              <span class="text-danger" *ngIf="(!form.get('tweetBody').value )">
+                The message sent has to contain something
+              </span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+            <span class="text-danger" *ngIf="(form.get('tweetType.Dm').value && userNamesLength() === 0 )">
+              If sending a DM at least one username is required
+            </span>
+            </div>
+          </div>
         </div>
 
           <div class="row" *ngIf="form.get('tweetType.Dm').value == true">
-            <div class="col-sm-12 col-md-6">
+            <div class="col-sm-12 col-md-9">
               <div formArrayName="userNames">
                 <div class="row" *ngFor="let item of returnControlUsers(); let i = index" [formGroupName]="i">
 
                     <div class="col-12">
                       <div class="form-group">
-                        <div class="input-group mb-3">
+                        <div class="input-group mb-3" style="margin-bottom: 0px">
                           <div class="input-group-prepend">
                             <span class="input-group-text">@</span>
                           </div>
                           <input class="form-control" formControlName="userNames" name="text" type="text" placeholder="Username" id="cost">
                           <button class="btn btn-danger" style="margin-left: 10px;" (click)="removeUser(i)">x</button>
                         </div>
+                        <span class="text-danger" *ngIf="fetchUser(i) && !fetchUser(i).valid && fetchUser(i).touched">
+                          Username is not valid
+                        </span>
+
+
                       </div>
                     </div>
+                  <div class="col-12">
+                  </div>
 
                 </div>
               </div>
@@ -131,12 +159,19 @@
               <button type="button" style="margin-left: 0px;" class="btn btn-primary ml-0" (click)="newUserName()">Add new @</button>
             </div>
           </div>
+<!--        <div class="row">-->
+<!--          <div class="col-6">-->
+<!--            <button class="btn btn-primary">Upload Image</button>-->
+<!--          </div>-->
+<!--        </div>-->
       </div>
-      <div class="modal-footer" (mouseover)="footer= true" (mouseleave)="footer= false">
-        <span class="text-danger mr-auto" *ngIf="footer && (!form.valid || (!form.get('tweetType.public').value && !form.get('tweetType.Dm').value))" >
+      <div class="modal-footer" (mouseover)="footer= true" (mouseenter)="footer=true" (mouseleave)="footer= false">
+        <span class="text-danger mr-auto" *ngIf="footer && ((!form.valid || (!form.get('tweetType.public').value
+        && !form.get('tweetType.Dm').value)) || (form.get('tweetType.Dm').value && userNamesLength() === 0 ))" >
          Not all fields are filled in correctly
         </span>
-        <button type="submit" [disabled]="!form.valid || (!form.get('tweetType.public').value && !form.get('tweetType.Dm').value)" class="btn btn-primary">Schedule</button>
+        <button type="submit" [disabled]="!form.valid || (!form.get('tweetType.public').value && !form.get('tweetType.Dm').value) ||
+        (form.get('tweetType.Dm').value && userNamesLength() === 0 )" class="btn btn-primary">Schedule</button>
         <button type="button" (click)="onLeave()"  class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
       </form>

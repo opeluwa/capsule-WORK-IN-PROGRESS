@@ -1,1 +1,61 @@
-<p>auth works!</p>
+<div class="row" style="margin-top: 25vh;">
+    <div class="col-10 col-md-7 mx-auto">
+      <form #f="ngForm" (ngSubmit)="submitForm()">
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <div class="form-group mx-auto">
+            <label for="email">Email</label>
+            <input id="email" type="text" required class="form-control" name="email"
+                   email ngModel #email="ngModel">
+          </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-12">
+            <span class="text-danger" *ngIf="!email.valid && email.touched">
+              Email isn't of the correct format
+            </span>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-12 mx-auto">
+          <div class="form-group mx-auto">
+            <label for="password">Password</label>
+            <input type="password" required class="form-control" id="password" name="password"
+                   minlength="6" ngModel #password="ngModel">
+          </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-12">
+            <span class="text-danger" *ngIf="!password.valid && password.touched">
+              Password must be at least 6 chars
+            </span>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-12 col-md-8">
+          <p (click)="loginMode = !loginMode" style="cursor: pointer">{{loginMode? 'Not registered? Sign up now!' : ' Already have an account? Login now!' }}</p>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col-12 d-md-none">
+            <div class="alert alert-danger" *ngIf="!f.valid && fieldsError" role="alert">
+              Fields are not entered correctly!
+            </div>
+          </div>
+        </div>
+
+      <div class="row">
+        <div class="col-4 col-md-2 ml-0" (mousedown)="!f.valid && AlertShower()" triggers="manual" #p="ngbTooltip" style="padding-top: 4px; padding-bottom: 4px"
+              (mouseover)="!f.valid && p.open()"  (mouseleave)="p.close()"
+             placement="right" [ngbTooltip]="!f.valid ? 'Fields are not entered correctly': null">
+          <button type="submit" (mousedown)="!f.valid && p.open()" class="btn btn-outline-secondary mr-2" [disabled]="!f.valid">
+            {{loginMode? 'Login':'Register'}}
+          </button>
+        </div>
+      </div>
+      </form>
+    </div>
+
+</div>

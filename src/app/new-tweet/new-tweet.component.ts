@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Subject} from 'rxjs';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {TweetService} from '../shared/tweet.service';
 
 @Component({
   selector: 'app-new-tweet',
@@ -13,7 +14,7 @@ export class NewTweetComponent implements OnInit, OnDestroy {
   userNames = new FormArray([]);
   tweetBody = '';
   footer = false;
-  constructor() { }
+  constructor(private tweetServ: TweetService) { }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -33,7 +34,6 @@ export class NewTweetComponent implements OnInit, OnDestroy {
   }
 
   onLeave(): void {
-    console.log(this.tweetBody);
     this.exit.next();
   }
 
@@ -43,16 +43,24 @@ export class NewTweetComponent implements OnInit, OnDestroy {
 
   newUserName() {
     (this.form.get('userNames') as FormArray).push(new FormGroup({
-      userNames: new FormControl(null)
+      userNames: new FormControl(null, [Validators.required, Validators.pattern('[A-Za-z0-9_-]+')])
     }));
   }
 
   submit() {
-    console.log(this.form.value);
+    TweetService.newScheduleTweet(this.form.value);
   }
 
   removeUser(index: number) {
     (this.form.get('userNames') as FormArray).removeAt(index);
+  }
+
+  fetchUser(index: number) {
+    return (this.form.get('userNames') as FormArray).controls[index];
+  }
+
+  userNamesLength() {
+    return (this.form.get('userNames') as FormArray).controls.length;
   }
 
   scheduleChecker2(control: FormControl): {[s: string]: boolean } {
@@ -69,7 +77,6 @@ export class NewTweetComponent implements OnInit, OnDestroy {
     if (this.form && this.form.get('scheduleType').value == 1) {
       this.form.get('reminders.number').setErrors(null);
       if (new Date(control.value).getTime() < new Date().getTime()) {
-        console.log(new Date(control.value).getTime() < new Date().getTime() );
         return {'setDateInvalid': true};
       }
     }
