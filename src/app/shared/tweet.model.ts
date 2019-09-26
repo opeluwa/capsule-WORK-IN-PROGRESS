@@ -8,5 +8,5 @@ export class TweetModel {
               public setDate: number,
               public tweetType: tweetTypeInterface,
               public userNames: string[],
-              public tweetId: string) {}
+              public id: string) {}
 }

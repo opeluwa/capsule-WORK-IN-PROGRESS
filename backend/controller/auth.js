@@ -46,10 +46,15 @@ exports.login = (req, res, next) => {
   authModel.findOne({email: req.body.email}).then(userData => {
     if (!userData) {
       emailFound = true;
+      return ({hashed: null, userId: null});
     }
     return {hashed: bcrypt.compareSync(req.body.password, userData.password), userId: userData._id}; // compare hashes with one another
   }).then( ({hashed, userId}) => {
-      if(hashed) {
+      if(emailFound) {
+        return res.status(401).json({
+          message: 'Password or email is incorrect'
+        });
+      } else if(hashed && !emailFound) {
         console.log('login success');
         const token = jwt.sign({email: req.body.email, userId: userId}, process.env.JWT_KEY,
           {expiresIn: '1h'});

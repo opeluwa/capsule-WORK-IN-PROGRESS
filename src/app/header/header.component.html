@@ -8,9 +8,10 @@
     <ul class="navbar-nav mr-auto" style="cursor:pointer;">
       <li class="nav-item"><a *ngIf="loggedIn" routerLinkActive="active"  class="nav-link navText" routerLink="Dashboard">Dashboard</a></li>
       <li class="nav-item"><a *ngIf="loggedIn" routerLinkActive="active" class="nav-link navText" routerLink="Active">Active tweets</a></li>
-      <li class="nav-item"><a *ngIf="!loggedIn" routerLinkActive="active" class="nav-link navText" routerLink="Auth">Login</a></li>
     </ul>
     <ul class="navbar-nav mr-0">
+      <li class="nav-item"><a *ngIf="!loggedIn" routerLinkActive="active" class="nav-link navText" routerLink="Auth">Login</a></li>
+
       <li class="nav-item"><a *ngIf="loggedIn" (click)="logout()" routerLinkActive="active" class="nav-link navText" routerLink="Auth">Logout</a></li>
 
     </ul>

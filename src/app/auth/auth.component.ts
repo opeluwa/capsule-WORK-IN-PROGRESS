@@ -10,6 +10,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 export class AuthComponent implements OnInit {
   @ViewChild('f', {static : true}) f: NgForm;
+  showMessage: boolean;
   errorMessage: string;
   fieldsError: boolean;
   loginMode = true;
@@ -28,12 +29,14 @@ export class AuthComponent implements OnInit {
   submitForm() {
     console.log(this.f.value.password);
     console.log(this.f.value.email);
+    this.showMessage = false;
     if (this.loginMode) {
       this.authServ.login({email: this.f.value.email,
         password: this.f.value.password}).subscribe(data => {
         this.router.navigate(['/Dashboard']);
       }, err => {
-
+        this.showMessage = true;
+        this.errorMessage = err.error.message;
       });
 
     } else {
@@ -42,7 +45,8 @@ export class AuthComponent implements OnInit {
         password: this.f.value.password}).subscribe(data => {
         this.router.navigate(['/Dashboard']);
       }, err => {
-
+        this.showMessage = true;
+        this.errorMessage = err.error.message;
       });
     }
   }

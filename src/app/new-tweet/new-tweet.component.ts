@@ -48,7 +48,8 @@ export class NewTweetComponent implements OnInit, OnDestroy {
   }
 
   submit() {
-    TweetService.newScheduleTweet(this.form.value);
+    console.log(this.form.value);
+    this.tweetServ.newScheduleTweet(this.form.value);
   }
 
   removeUser(index: number) {

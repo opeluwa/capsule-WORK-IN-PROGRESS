@@ -4,6 +4,8 @@ mongoose.set('useCreateIndex', true);
 const bodyParser= require('body-parser');
 
 const authRoute = require('./routes/auth');
+
+const tweetRoute = require('./routes/tweet');
 const app = express();  // expressed app.
 
 mongoose.connect("mongodb+srv://Opeoluwa:" + process.env.MONOGO_ATLAS_PW + "@cluster0-fhlpa.mongodb.net/Capsule?retryWrites=true&w=majority", { useNewUrlParser: true } ).then(() => { //connection to the database
@@ -20,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/api/auth",authRoute);
+app.use("/api/tweets", tweetRoute);
 // app.use("/api/notifications",notificationsRoutes);
 
 module.exports = app;

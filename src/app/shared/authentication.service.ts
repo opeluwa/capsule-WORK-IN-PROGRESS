@@ -13,6 +13,7 @@ interface userInterface {
 @Injectable({providedIn: 'root'})
 export class AuthenticationService {
   tokenTimer: any;
+  token: string;
   userSubject = new BehaviorSubject<userInterface>(null);
   constructor(private httpServ: HttpService, private router: Router) {}
 
@@ -29,19 +30,22 @@ export class AuthenticationService {
   }
 
   logout() {
-    if (localStorage.getItem('user')) {
+
       localStorage.clear();
       window.location.reload();
-    }
+
   }
 
   autoLogin() {
     const localData: userInterface = JSON.parse(localStorage.getItem('user'));
-    if (localData.TimeExpired - new Date().getTime() > 0) {
-      this.userSubject.next(localData);
-      this.loginTimer(localData.TimeExpired);
-    } else {
-      this.logout();
+    if (localData) {
+      if (localData.TimeExpired - new Date().getTime() > 0) {
+        this.userSubject.next(localData);
+        this.token = localData.token;
+        this.loginTimer(localData.TimeExpired);
+      } else {
+        this.logout();
+      }
     }
   }
 
@@ -65,6 +69,7 @@ export class AuthenticationService {
 
   userInit(data: {message: string, token: string, timeLeft: number}, email: string) {
     const expTime = this.expirationTimeSetUp(data.timeLeft);
+    this.token = data.token;
     const userData: userInterface = {
       email,
       token: data.token,
